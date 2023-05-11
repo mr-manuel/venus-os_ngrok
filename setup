@@ -1,0 +1,174 @@
+#!/bin/bash
+
+# this is a sample script that can be called from reinstallMods
+#
+# CommonResources provides:
+#   code to determine if it was called from reinstallMods or manually from a command line
+#   code to insert the script into scriptsList
+#   code to control exitting the program or processing by reinstallMods
+#    or prompting the user
+#
+#   functions to make it easier to install and remove modified files from Venus
+#
+#   The SetupHelper package includes CommonResources
+#   and a script to reinstall programs after a Venus software update
+#   SetupHelper should be installed before running this script
+#
+# Refer to the SetupHelper ReadMe file for details.
+#
+# key segments are marked with ####
+
+qmlDir=/opt/victronenergy/gui/qml
+
+#### following lines incorporate SetupHelper utilities into this script
+# Refer to the SetupHelper ReadMe file for details.
+
+source "/data/SetupHelper/CommonResources"
+
+# GitHub account info - fill in as appropriate
+# to include this package in SetupHelper automatic updates
+packageGitHubUser="mr-manuel"
+packageGitHubBranch="venus-os_ngrok"
+
+#### end of lines to include SetupHelper
+
+#### running manually and OK to proceed - prompt for input
+if [ $scriptAction == 'NONE' ] ; then
+    # display innitial message
+    echo
+    echo "The ngrok allows you to access a specified port from external,"
+    echo "like tcp/22 (SSH), tcp/80 (HTTP), tcp/1881 (Node-RED) and all others."
+
+    # prompt for standard actions (install, reinstall, uninstall, etc)
+    # include MORE_PROMPTS if additional prompts are needed for installation
+    # scriptAction is set to INSTALL for reinstalls and UNINSTALL for uninstalls
+    # function exits for quit action
+    # log display is handled in function and remains there for other actions
+    #standardActionPrompt 'MORE_PROMPTS'
+    standardActionPrompt
+
+    # If nonstandard action prompts are required, duplicate the standardActionPrompt code here
+    # and modify it as needed
+
+    #### prompt for additional parameters - do all prompting before starting any work
+
+#    if [ $scriptAction == 'NONE' ]; then
+#        echo
+#        echo "The widget:"
+#        echo "  1) does something"
+#        echo "  2) and something else"
+#        echo
+#        response=""
+#        while [ -z $response ] || ! ( [ $response == 'y' ] || [ $response == 'n' ] )
+#        do
+#            /bin/echo -n "Do you wish to install the widget? (y/n): "
+#            read response
+#        done
+#
+#        #### save parameters in persistent storage for reinstall
+#        if [ $response == 'y' ]; then
+#            touch $setupOptionsDir/param1
+#        else
+#            rm -f $setupOptionsDir/param1
+#        fi
+#
+#        # ask user for a value to be added to /Settings
+#        # typeset -i inverterPeakPower
+#        read -p "Enter value for Widget X: " param2
+#        echo $param2 >  $setupOptionsDir/param2
+#    fi
+#
+#    # next step is to install
+#    scriptAction='INSTALL'
+
+fi
+
+#### install code goes here
+if [ $scriptAction == 'INSTALL' ] ; then
+
+    #### code to install/activate package goes here
+    # below is example code to set flags used for exiting
+
+    # sample calls to install the package files - original files are backed up for restore during uninstall
+    #   updateActiveFile $venusDirectory/activeFile1
+    #   copyToActiveFile $someDirectory/replacementFile2 $venusDirectory/activeFile2
+
+    logMessage "installing $packageName files"
+    updateActiveFile "$qmlDir/MbEditBoxAuthToken.qml"
+    updateActiveFile "$qmlDir/PageSettingsServices.qml"
+    updateActiveFile "$qmlDir/PageSettingsServicesNgrok.qml"
+
+    # sample code to create dBus settings
+    # dbus -y com.victronenergy.settings /Settings AddSettings\
+    #        '%[{"path": "/category/paramA", "type":"int", "default":0},\
+    #        {"path":"/category/paramB", "type":"float", "default":0},\
+    #        {"path":"/category/paramC", "type":"float", "default":0},\
+    #        {"path":"/category/paramD", "type":"float", "default":0}]'  > /dev/null
+
+    # sample code to set dBus settings
+    # dbus -y com.victronenergy.settings /Settings/category/paramA SetValue $param2 > /dev/null
+
+
+	# revert to VisualItemModel if before v3.00~14 (v3.00~14 uses VisibleItemModel)
+	versionStringToNumber "v3.00~14"
+	if (( $venusVersionNumber < $versionNumber )); then
+		logMessage "replacing VisibleItemModel with VisualItemModel"
+		fileList="$qmlDir/MbEditBoxAuthToken.qml"
+		fileList+=" $qmlDir/PageSettingsServices.qml"
+		fileList+=" $qmlDir/PageSettingsServicesNgrok.qml"
+		for file in $fileList ; do
+			sed -i -e 's/VisibleItemModel/VisualItemModel/' "$file"
+		done
+		restartGui=true
+	fi
+
+    logMessage "Downloading ngrok and extracting it"
+    wget -O /tmp/ngrok-v3-stable-linux-arm.tgz https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-arm.tgz
+    tar xvzf /tmp/ngrok-v3-stable-linux-arm.tgz -C $scriptDir
+    chmod +x $scriptDir/ngrok
+
+    installService $packageName
+
+    logMessage "++ $packageName installed"
+
+fi
+
+# #### uninstalling - check scriptAction again
+# if an install step failed package needs to be removed
+if [ $scriptAction == 'UNINSTALL' ] ; then
+    #### code to uninstall and deactivate package goes here
+
+    # sample calls to restore files to stock
+    #   restoreActiveFile $venusDirectory/activeFile1
+    #   restoreActiveFile $venusDirectory/activeFile2
+    #   restoreActiveFile $venusDirectory/activeFile3
+
+    restoreActiveFile "$qmlDir/MbEditBoxAuthToken.qml"
+    restoreActiveFile "$qmlDir/PageSettingsServices.qml"
+    restoreActiveFile "$qmlDir/PageSettingsServicesNgrok.qml"
+
+    # remove any dBus settings
+    # dbus -y com.victronenergy.settings /Settings RemoveSettings\
+    #        '%["category/paramA", "category/paramB",\
+    #        "category/paramC", "category/paramD"]' > /dev/null
+    removeService $packageName
+
+    logMessage "++ $packageName uninstalled"
+
+fi
+
+
+#### add code to restart apps and services here
+# gui is handled in endScript so it's not necessary to restart it here
+#if $restartAppsNeeded ; then
+#    echo restarting apps
+#    # killall foo # sample restart line(s)
+#    # svc -t "/service/bar"
+#fi
+
+if $filesUpdated ; then
+    restartGui=true
+fi
+
+# thats all folks - SCRIPT EXITS INSIDE THE FUNCTION
+endScript

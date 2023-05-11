@@ -1,0 +1,2 @@
+#!/bin/bash
+exec multilog t s25000 n4 /var/log/venus-os_ngrok

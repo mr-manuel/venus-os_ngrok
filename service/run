@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "*** starting ngrok ***"
+exec 2>&1
+exec python /data/venus-os_ngrok/venus-os_ngrok.py
