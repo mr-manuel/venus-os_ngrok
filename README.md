@@ -13,6 +13,10 @@ The allows you to access one selectable port from an external connection without
 
 ![venus-os](./screenshots/venus-os.png)
 
+### Installation
+
+Via [Setup Helper/Packet Manager](https://github.com/kwindrem/SetupHelper).
+
 ### Config
 
 Access to the remote console/GUI &rarr; Settings &rarr; Services &rarr; Ngrok
