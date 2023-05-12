@@ -1,4 +1,4 @@
-# venus-os_ngrok - Easy external access, makes port externally reachable
+# venus-os_ngrok - Remote access without port forwarding with Ngrok
 
 <small>GitHub repository: [mr-manuel/venus-os_ngrok](https://github.com/mr-manuel/venus-os_ngrok)</small>
 
@@ -9,13 +9,19 @@ I wrote this script for myself. I'm not responsible, if you damage something usi
 
 ### Purpose
 
-The allows you to access one selectable port from an external connection without the need to forward the port.
+I created this driver/packet for Venus OS that allows you to access a specific port on your Venus OS without the need to forward the port on your local router/firewall. It can for example be used to remote access the Venus OS device via SSH behind a mobile internet connection, VPN, firewall or anything else.
+
+The driver is using ngrok as application to achieve that. Ngrok is like a router that forwards the port for you. In order to be able to do that, the application connects to a ngrok server, which is acting as a router, where then a dynamic port is opened for you. Then you can connect to the displayed hostname and port. For detailed informations on how ngrok works, visit their [website](https://ngrok.com).
+
+In order to use ngrok you have to [create a free account](https://dashboard.ngrok.com/signup) first.
 
 ![venus-os](./screenshots/venus-os-services.png)
 
 ![venus-os](./screenshots/venus-os-ngrok.png)
 
 ### Installation
+
+⚠️ The [Setup Helper/Packet Manager](https://github.com/kwindrem/SetupHelper) is required for all installation methods.
 
 The driver can be installed via the [Setup Helper/Packet Manager](https://github.com/kwindrem/SetupHelper), by uploading it via SFTP to the directory `/data/venus-os_ngrok` and then running the `setup` file or by running this commands:
 
@@ -28,8 +34,6 @@ chmod +x /data/venus-os_ngrok/service/run /data/venus-os_ngrok/service/log/run /
 
 bash /data/venus-os_ngrok/setup
 ```
-
-⚠️ The [Setup Helper/Packet Manager](https://github.com/kwindrem/SetupHelper) is required for all installation methods.
 
 The configuration is done via remote console/GUI.
 
