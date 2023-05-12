@@ -35,7 +35,7 @@ MbPage {
 			}
 
 			MbSubMenu {
-				description: qsTr("Ngrok (Make port externally reachable)")
+				description: qsTr("Ngrok (Remote Port Forwarding/Access/Router)")
 				//show: ngrok.valid
 				subpage: Component { PageSettingsServicesNgrok {}  }
 			}

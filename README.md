@@ -11,11 +11,27 @@ I wrote this script for myself. I'm not responsible, if you damage something usi
 
 The allows you to access one selectable port from an external connection without the need to forward the port.
 
-![venus-os](./screenshots/venus-os.png)
+![venus-os](./screenshots/venus-os-services.png)
+
+![venus-os](./screenshots/venus-os-ngrok.png)
 
 ### Installation
 
-Via [Setup Helper/Packet Manager](https://github.com/kwindrem/SetupHelper).
+The driver can be installed via the [Setup Helper/Packet Manager](https://github.com/kwindrem/SetupHelper), by uploading it via SFTP to the directory `/data/venus-os_ngrok` and then running the `setup` file or by running this commands:
+
+```bash
+wget -O /tmp/venus-os_ngrok.zip https://github.com/mr-manuel/venus-os_ngrok/archive/refs/tags/latest.zip
+
+unzip /tmp/venus-os_ngrok.zip -d /data
+
+chmod +x /data/venus-os_ngrok/service/run /data/venus-os_ngrok/service/log/run /data/venus-os_ngrok/setup /data/venus-os_ngrok/venus-os_ngrok.py
+
+bash /data/venus-os_ngrok/setup
+```
+
+⚠️ The [Setup Helper/Packet Manager](https://github.com/kwindrem/SetupHelper) is required for all installation methods.
+
+The configuration is done via remote console/GUI.
 
 ### Config
 

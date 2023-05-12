@@ -4,7 +4,7 @@ import "utils.js" as Utils
 
 MbPage {
 	id: root
-	title: qsTr("Ngrok (Make port externally reachable)")
+	title: qsTr("Ngrok")
 
 	property VBusItem authtoken: VBusItem { bind: "com.victronenergy.settings/Settings/Services/Ngrok/AuthToken" }
 
