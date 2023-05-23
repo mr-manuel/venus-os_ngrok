@@ -41,7 +41,13 @@ The configuration is done via remote console/GUI.
 
 Access to the remote console/GUI &rarr; Settings &rarr; Services &rarr; Ngrok
 
+### Debugging
 
+The logs can be checked with `tail -n 100 -F /data/log/venus-os_ngrok/current | tai64nlocal`
+
+You can check, if ngrok is running by executing `ps | grep ngrok`
+
+If you do not see anything in the logs you can increase the log level in `/data/etc/venus-os_ngrok/venus-os_ngrok.py` by changing `level=logging.INFO` to `level=logging.DEBUG`
 
 ## Supporting/Sponsoring this project
 
