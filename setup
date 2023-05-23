@@ -127,6 +127,19 @@ if [ $scriptAction == 'INSTALL' ] ; then
     tar xvzf /tmp/ngrok-v3-stable-linux-arm.tgz -C $scriptDir
     chmod +x $scriptDir/ngrok
 
+    # check, if config file exists. If not copy it, if it exists in driver folder (e.g. after Venus OS update)
+    if [[ ! -f "/.config/ngrok/ngrok.yml" ]] && [[ -f "/data/venus-os_ngrok/ngrok.yml" ]]; then
+        if [[ ! -d "/.config/ngrok/ngrok.yml" ]]; then
+            mkdir -p /.config/ngrok
+        fi
+        cp /data/venus-os_ngrok/ngrok.yml /.config/ngrok/ngrok.yml
+    fi
+
+    # copy config file to driver folder (e.g. after plugin update)
+    if [[ -f "/.config/ngrok/ngrok.yml" ]] && [[ ! -f "/data/venus-os_ngrok/ngrok.yml" ]]; then
+        cp /.config/ngrok/ngrok.yml /data/venus-os_ngrok/ngrok.yml
+    fi
+
     installService $packageName
 
     logMessage "++ $packageName installed"

@@ -217,6 +217,9 @@ class Monitor:
                     "/data/venus-os_ngrok/ngrok config add-authtoken "
                     + self.DbusSettings["AuthToken"]
                 )
+                os.system(
+                    "cp -f /.config/ngrok/ngrok.yml /data/venus-os_ngrok/ngrok.yml"
+                )
             except Exception as e:
                 logging.error("Unexpected error: " + str(e))
 
