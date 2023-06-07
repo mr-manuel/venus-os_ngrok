@@ -6,6 +6,10 @@ MbPage {
 	id: root
 	title: qsTr("Ngrok")
 
+////// GuiMods — DarkMode
+	property VBusItem darkModeItem: VBusItem { bind: "com.victronenergy.settings/Settings/GuiMods/DarkMode" }
+	property bool darkMode: darkModeItem.valid && darkModeItem.value == 1
+
 	property VBusItem authtoken: VBusItem { bind: "com.victronenergy.settings/Settings/Services/Ngrok/AuthToken" }
 
 	model: VisibleItemModel {
@@ -21,10 +25,10 @@ MbPage {
 			description: qsTr("Your Authtoken")
 			readonly: ngrok.checked
 			item.bind: "com.victronenergy.settings/Settings/Services/Ngrok/AuthToken"
-			maximumLength: 64
+			maximumLength: 50
 			enableSpaceBar: false
-			backgroundColor: authtoken.value == "" ? "#ff0000" : "#ddd"
-			wrapMode: Text.Wrap
+			backgroundColor: authtoken.value == "" ? "#ff0000" : (!darkMode ? "#ddd" : "#4b4b4b")
+			//wrapMode: Text.Wrap
 		}
 
 		MbItemText {

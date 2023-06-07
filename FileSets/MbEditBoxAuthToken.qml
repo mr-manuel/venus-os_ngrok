@@ -6,11 +6,15 @@ MbItem {
 	id: root
 	cornerMark: !readonly && !editMode
 	height: expanded.y + expanded.height + 1
-	//height: expanded.y + expanded.height + 37
+
+////// GuiMods — DarkMode
+	property VBusItem darkModeItem: VBusItem { bind: "com.victronenergy.settings/Settings/GuiMods/DarkMode" }
+	property bool darkMode: darkModeItem.valid && darkModeItem.value == 1
 
 	property alias maximumLength: ti.maximumLength
 	property variant tmpValue
-	property string matchString: "0123456789 abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ~!@#$%^&*()-_=+[]{}\;:|/.,<>?"
+////// AuthToken
+	property string matchString: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ~!@#$%^&*()-_=+[]{}\;:|/.,<>?"
 	property string ignoreChars
 	property bool readonly: !userHasWriteAccess
 	property bool overwriteMode: false
@@ -25,8 +29,10 @@ MbItem {
 	property alias upDownText: buttonExplanation.upDownText
 	property alias centerText: buttonExplanation.centerText
 	property alias unit: _unitText.text
-	property alias wrapMode: ti.wrapMode
+////// AuthToken
 	property string backgroundColor: greytag.color
+////// AuthToken
+	property int customFontPixelSize: 15
 
 	// internal
 	property string _editText
@@ -235,19 +241,22 @@ MbItem {
 		id: inputItem
 
 		property real cursorWidth: 8.0
-		height: defaultHeight + 11
+		height: defaultHeight
 		anchors {
 			right: parent.right
 			top: parent.top
-			topMargin: 9
+////// AuthToken
+			topMargin: 26
 		}
 
 		MbBackgroundRect {
 			id: greytag
-			color: editMode ? "#fff": backgroundColor
+////// GuiMods — DarkMode
+			color: editMode ? ( !darkMode ? "#fff": "#747474" ) : backgroundColor
 			width: ti.width + 2 * style.marginDefault
 			height: ti.height + 6
-			border.color: "#ddd"
+////// GuiMods — DarkMode
+			border.color: !darkMode ? "#ddd" : "#4b4b4b"
 			border.width: editMode ? 1 : 0
 			anchors.centerIn: ti
 		}
@@ -262,7 +271,8 @@ MbItem {
 
 			Text {
 				id: _unitText
-				font.pixelSize: root.style.fontPixelSize
+////// AuthToken
+				font.pixelSize: customFontPixelSize
 				anchors.verticalCenter: parent.verticalCenter
 			}
 		}
@@ -276,19 +286,22 @@ MbItem {
 				top: parent.top
 				topMargin: (defaultHeight - height) / 2
 			}
-			width: 320
-			height: 38
+////// AuthToken
+			width: 450
 
+////// GuiMods — DarkMode
+			color: !darkMode ? "#000000" : "#fdfdfd"
 
 			text: editMode ? _editText : item.text
 			// When editing the it is nice to have a fix with font, so when changing
 			// digits the text does change in length all the time. However this fonts
 			// has an zero with a dot in it, with looks inconsitent with the regular
 			// font. So only use the fixed with font when editing.
-			font.family: editMode ? "DejaVu Sans Mono" : root.style.fontFamily
-			font.pixelSize: root.style.fontPixelSize
-
-			property int maximumLength: 20
+////// AuthToken
+			font.family: "DejaVu Sans Mono"
+			font.pixelSize: customFontPixelSize
+////// AuthToken
+			property int maximumLength: root.maximumLength
 			property int cursorPosition
 
 			Item {

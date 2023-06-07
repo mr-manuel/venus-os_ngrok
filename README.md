@@ -15,15 +15,11 @@ The driver is using ngrok as application to achieve that. Ngrok is like a router
 
 In order to use ngrok you have to [create a free account](https://dashboard.ngrok.com/signup) first.
 
-![venus-os](./screenshots/venus-os-services.png)
-
-![venus-os](./screenshots/venus-os-ngrok.png)
-
 ### Installation
 
 ⚠️ The [Setup Helper/Packet Manager](https://github.com/kwindrem/SetupHelper) is required for all installation methods.
 
-The driver can be installed via the [Setup Helper/Packet Manager](https://github.com/kwindrem/SetupHelper), by uploading it via SFTP to the directory `/data/venus-os_ngrok` and then running the `setup` file or by running this commands:
+The driver can directly be installed via remote console/GIU with the [Setup Helper/Packet Manager](https://github.com/kwindrem/SetupHelper) or by uploading it via SFTP to the directory `/data/venus-os_ngrok` and then running the `setup` file or by running this commands:
 
 ```bash
 wget -O /tmp/venus-os_ngrok.zip https://github.com/mr-manuel/venus-os_ngrok/archive/refs/tags/latest.zip
@@ -36,6 +32,15 @@ bash /data/venus-os_ngrok/setup
 ```
 
 The configuration is done via remote console/GUI.
+
+<details><summary>Show screenshots</summary>
+
+![Ngrok - Services](/screenshots/venus-os-services.png)
+![Ngrok - Page](/screenshots/venus-os-ngrok-1.png)
+![Ngrok - Page](/screenshots/venus-os-ngrok-2.png)
+
+</details>
+
 
 ### Config
 
