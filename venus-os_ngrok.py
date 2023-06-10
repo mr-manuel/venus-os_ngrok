@@ -1,15 +1,5 @@
 #!/usr/bin/env python
 
-# This program creates and monitors a dBus service to trigger a system shutdown
-# The com.victronenergy.shutdown service is created and contains one parameter: /Shutdown
-# /Shutdown is normally 0 but if this program detects a value other than 0,
-# the system shutdown -h now call is made
-
-# it also reads a GPIO pin on Raspberry Pi platforms
-#    if that pin goes low the system is a shutdown
-#    a switch in Settings enables this input so it doesn't cause unintended shutdowns
-#
-
 from subprocess import check_output, CalledProcessError
 
 # import subprocess
@@ -100,15 +90,13 @@ class Monitor:
     # flag value change from external source
     def _handlechangedvalue(self, path, value):
         # if value == 1:
-        #    logging.info("User shutdown received from GUI - shutting down system")
-        #    os.system("shutdown -h now")
+        #    logging.info("value changed")
         logging.error(
             "_handlechangedvalue -_> path: " + str(path) + " - value: " + str(value)
         )
         return True
 
     def _background(self):
-        # if shutdown pin is enabled in the GUI and a transition to active just occurred, trigger shutdown
         if self.enabled != self.DbusSettings["Enabled"]:
             logging.info(
                 'Value "Enabled" changed from "'
@@ -265,15 +253,8 @@ class Monitor:
         # self.DbusService.add_path("/Serial", "")
         # use numeric values (1/0) not True/False for /Connected to make GUI display correct state
         self.DbusService.add_path("/Connected", 1)
-        # indicates to the GUI that it can show the RPI shutdown pin control
-        # self.DbusService.add_path("/ExtShutdownPresent", 0)
 
-        # GUI sets this to initialte shutdown
-        self.DbusService.add_path(
-            "/Shutdown", 0, writeable=True, onchangecallback=self._handlechangedvalue
-        )
-
-        # create the setting that allows enabling the RPI shutdown pin
+        # create the setting that are needed
         settingsList = {
             "Enabled": ["/Settings/Services/Ngrok/Enabled", 0, 0, 1],
             "AuthToken": ["/Settings/Services/Ngrok/AuthToken", "", 0, 64],
@@ -293,10 +274,6 @@ class Monitor:
         self.protocol = self.DbusSettings["Protocol"]
         self.porttoforward = self.DbusSettings["PortToForward"]
         # self.link = self.DbusSettings["Link"]
-
-        # enable the shutdown pin only if on a Raspberry PI
-        # if self.ShutdownPinPresent:
-        #    self.DbusService["/ExtShutdownPresent"] = 1
 
         return
 
