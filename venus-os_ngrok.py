@@ -1,17 +1,11 @@
 #!/usr/bin/env python
 
 from subprocess import check_output, CalledProcessError
-
-# import subprocess
 from time import sleep
-
-# import platform
-# import argparse
 import logging
 import sys
 import os
 
-# import time
 import dbus  # pyright: ignore[reportMissingImports]
 
 # accommodate both Python 2 and 3
@@ -31,7 +25,7 @@ from settingsdevice import SettingsDevice
 logging.basicConfig(level=logging.INFO)
 
 
-ShutdownServiceName = "com.victronenergy.ngrok"
+ServiceName = "com.victronenergy.ngrok"
 
 # These methods permit creation of a separate connection for each Repeater
 # overcoming the one service per process limitation
@@ -237,7 +231,7 @@ class Monitor:
 
     def _createDbusService(self):
         # updated version of VeDbusService (in ext directory) -- see https://github.com/victronenergy/dbus-digitalinputs for new imports
-        self.DbusService = VeDbusService(ShutdownServiceName, bus=self.DbusBus)
+        self.DbusService = VeDbusService(ServiceName, bus=self.DbusBus)
 
         # Create the objects
 
