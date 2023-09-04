@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.0.6
+* Added: FileSets for Venus OS v3.10~34
+
 ## v0.0.5
 * Added: FileSets for Venus OS v3.10~9
 
