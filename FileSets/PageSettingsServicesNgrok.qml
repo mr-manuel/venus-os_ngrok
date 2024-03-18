@@ -21,6 +21,12 @@ MbPage {
 			bind: "com.victronenergy.settings/Settings/Services/Ngrok/Enabled"
 		}
 
+		MbItemValue {
+			description: qsTr("Port reachable at")
+			show: ngrok.checked
+			item.bind: "com.victronenergy.settings/Settings/Services/Ngrok/Link"
+		}
+
 		MbEditBoxAuthToken {
 			description: qsTr("Your Authtoken")
 			readonly: ngrok.checked
@@ -38,6 +44,7 @@ MbPage {
 		}
 
 		MbItemOptions {
+			id: protocol
 			description: qsTr("Protocol")
 			readonly: authtoken.value == "" || ngrok.checked
 			bind: "com.victronenergy.settings/Settings/Services/Ngrok/Protocol"
@@ -57,10 +64,14 @@ MbPage {
 			enableSpaceBar: true
 		}
 
-		MbItemValue {
-			description: qsTr("Port reachable at")
-			show: ngrok.checked
-			item.bind: "com.victronenergy.settings/Settings/Services/Ngrok/Link"
+		MbEditBoxAuthToken {
+			description: qsTr("Custom NGROK Domain for HTTP/HTTPS (optional)")
+			readonly: ngrok.checked
+			item.bind: "com.victronenergy.settings/Settings/Services/Ngrok/CustomDomain"
+			maximumLength: 50
+			enableSpaceBar: false
+			backgroundColor: !darkMode ? "#ddd" : "#4b4b4b"
+			show: protocol.value == "http" || protocol.value == "https"
 		}
 
 	}

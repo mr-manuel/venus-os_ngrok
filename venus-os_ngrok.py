@@ -70,8 +70,9 @@ class Monitor:
     enabled = None
     authtoken = None
     protocol = None
-    porttoforward = None
+    port_to_forward = None
     link = None
+    custom_domain = None
 
     def __init__(self):
         # set up unique dBus connection and dBus service
@@ -121,16 +122,27 @@ class Monitor:
                         if self.DbusSettings["Protocol"] == "https"
                         else self.DbusSettings["Protocol"]
                     )
+
                     port = (
                         "https://localhost:" + str(self.DbusSettings["PortToForward"])
                         if self.DbusSettings["Protocol"] == "https"
                         else str(self.DbusSettings["PortToForward"])
                     )
+
+                    # custom domain only works for http, https and tls
+
+                    if protocol == "http":
+                        custom_domain = (
+                            "--domain=" + self.DbusSettings["CustomDomain"]
+                            if self.DbusSettings["CustomDomain"] is not None
+                            else ""
+                        )
+                    else:
+                        custom_domain = ""
+
+                    # ngrok http --domain=raccoon-concrete-heavily.ngrok-free.app 80
                     command = (
-                        "nohup /data/venus-os_ngrok/ngrok "
-                        + protocol
-                        + " "
-                        + port
+                        f"nohup /data/venus-os_ngrok/ngrok {protocol} {custom_domain} {port}"
                         + " --log=false > /tmp/ngrok.out &"
                         # + " --log=stdout > /tmp/ngrok.out &"
                         # + " --log=stderr > /tmp/ngrok.out &"
@@ -217,15 +229,25 @@ class Monitor:
             )
             self.protocol = self.DbusSettings["Protocol"]
 
-        if self.porttoforward != self.DbusSettings["PortToForward"]:
+        if self.port_to_forward != self.DbusSettings["PortToForward"]:
             logging.info(
                 'Value "PortToForward" changed from "'
-                + str(self.porttoforward)
+                + str(self.port_to_forward)
                 + '" to "'
                 + str(self.DbusSettings["PortToForward"])
                 + '"'
             )
-            self.porttoforward = self.DbusSettings["PortToForward"]
+            self.port_to_forward = self.DbusSettings["PortToForward"]
+
+        if self.custom_domain != self.DbusSettings["CustomDomain"]:
+            logging.info(
+                'Value "CustomDomain" changed from "'
+                + str(self.custom_domain)
+                + '" to "'
+                + str(self.DbusSettings["CustomDomain"])
+                + '"'
+            )
+            self.custom_domain = self.DbusSettings["CustomDomain"]
 
         return True
 
@@ -254,6 +276,7 @@ class Monitor:
             "AuthToken": ["/Settings/Services/Ngrok/AuthToken", "", 0, 64],
             "Protocol": ["/Settings/Services/Ngrok/Protocol", "tcp", 0, 16],
             "PortToForward": ["/Settings/Services/Ngrok/PortToForward", 22, 0, 65536],
+            "CustomDomain": ["/Settings/Services/Ngrok/CustomDomain", "", 0, 128],
             "Link": ["/Settings/Services/Ngrok/Link", "", 0, 128],
         }
         self.DbusSettings = SettingsDevice(
@@ -266,7 +289,8 @@ class Monitor:
         # self.enabled = self.DbusSettings["Enabled"]
         self.authtoken = self.DbusSettings["AuthToken"]
         self.protocol = self.DbusSettings["Protocol"]
-        self.porttoforward = self.DbusSettings["PortToForward"]
+        self.port_to_forward = self.DbusSettings["PortToForward"]
+        # self.customdomain = self.DbusSettings["CustomDomain"]
         # self.link = self.DbusSettings["Link"]
 
         return

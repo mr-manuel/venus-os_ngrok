@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.1.0
+* Added: Custom domain for HTTP/HTTPS
+
 ## v0.0.7
 * Added: FileSets for Venus OS v3.30~7
 
